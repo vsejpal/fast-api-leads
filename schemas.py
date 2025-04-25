@@ -21,8 +21,14 @@ class Lead(LeadBase):
     class Config:
         from_attributes = True
 
-class LeadStateUpdate(BaseModel):
-    state: LeadState
+class LeadUpdate(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    state: Optional[LeadState] = None
+
+    class Config:
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str

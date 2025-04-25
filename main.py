@@ -88,10 +88,10 @@ async def list_leads(
     leads = db.query(models.Lead).offset(skip).limit(limit).all()
     return leads
 
-@app.patch("/leads/{lead_id}/state", response_model=schemas.Lead)
-async def update_lead_state(
+@app.patch("/leads/{lead_id}", response_model=schemas.Lead)
+async def update_lead(
     lead_id: int,
-    lead_state: schemas.LeadStateUpdate,
+    lead_update: schemas.LeadUpdate,
     current_user: models.User = Depends(auth.get_current_active_user),
     db: Session = Depends(get_db)
 ):
@@ -99,7 +99,10 @@ async def update_lead_state(
     if db_lead is None:
         raise HTTPException(status_code=404, detail="Lead not found")
     
-    db_lead.state = lead_state.state
+    # Update lead fields that are provided
+    for field, value in lead_update.dict(exclude_unset=True).items():
+        setattr(db_lead, field, value)
+    
     db.commit()
     db.refresh(db_lead)
     return db_lead

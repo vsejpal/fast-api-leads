@@ -1,17 +1,23 @@
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 from typing import List
 from pydantic import EmailStr, BaseModel
+import os
+from dotenv import load_dotenv
 
-# These should be moved to environment variables
+# Load environment variables
+load_dotenv()
+
+# Email configuration for MailHog
 conf = ConnectionConfig(
-    MAIL_USERNAME="your-email@example.com",
-    MAIL_PASSWORD="your-password",
-    MAIL_FROM="your-email@example.com",
-    MAIL_PORT=587,
-    MAIL_SERVER="smtp.gmail.com",
-    MAIL_STARTTLS=True,
-    MAIL_SSL_TLS=False,
-    USE_CREDENTIALS=True
+    MAIL_USERNAME="",  # Not needed for MailHog
+    MAIL_PASSWORD="",  # Not needed for MailHog
+    MAIL_FROM="test@example.com",  # Can be any email for testing
+    MAIL_PORT=1025,  # MailHog SMTP port
+    MAIL_SERVER="localhost",  # MailHog server
+    MAIL_STARTTLS=False,  # MailHog doesn't use TLS
+    MAIL_SSL_TLS=False,  # MailHog doesn't use SSL
+    USE_CREDENTIALS=False,  # No auth needed for MailHog
+    VALIDATE_CERTS=False  # No cert validation needed for MailHog
 )
 
 class EmailSchema(BaseModel):
@@ -30,6 +36,7 @@ async def send_lead_notification(lead_data: dict, attorney_email: str):
         Best regards,
         The Legal Team
         """,
+        subtype=MessageType.plain
     )
 
     # Send email to attorney
@@ -44,6 +51,7 @@ async def send_lead_notification(lead_data: dict, attorney_email: str):
 
         Please review the attached resume and reach out to the prospect.
         """,
+        subtype=MessageType.plain,
         attachments=[lead_data['resume_path']]
     )
 

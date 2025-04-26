@@ -211,7 +211,7 @@ export TOKEN="eyJ0eXAiOiJKV1QiLCJhbGc..."
 
 ```bash
 # Create a new lead with resume
-curl -X POST "http://localhost:8001/api/leads" \
+curl -X POST "http://localhost:8001/api/leads/" \
      -F "first_name=John" \
      -F "last_name=Doe" \
      -F "email=john.doe@example.com" \

@@ -27,7 +27,7 @@ async def login_for_access_token(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.post("/users/", response_model=User)
+@router.post("/register", response_model=User)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = users_crud.get_user_by_email(db, user.email)
     if db_user:

@@ -9,7 +9,7 @@ import schemas
 import auth
 from database import engine, get_db
 from email_utils import send_lead_notification
-from typing import List
+from typing import List, Optional
 from fastapi.responses import FileResponse
 import mimetypes
 
@@ -98,15 +98,46 @@ async def create_lead(
 
     return db_lead
 
-@app.get("/leads/", response_model=List[schemas.Lead])
+@app.get("/leads/", response_model=schemas.PaginatedLeads)
 async def list_leads(
-    skip: int = 0,
-    limit: int = 100,
+    page_size: int = 10,
+    after_id: Optional[int] = None,
     current_user: models.User = Depends(auth.get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    leads = db.query(models.Lead).offset(skip).limit(limit).all()
-    return leads
+    # Validate page_size
+    if page_size < 1:
+        raise HTTPException(status_code=400, detail="page_size must be greater than 0")
+    if page_size > 100:  # Set a reasonable maximum
+        page_size = 100
+
+    # Base query
+    query = db.query(models.Lead)
+
+    # Get total count
+    total = query.count()
+
+    # Apply cursor pagination
+    if after_id:
+        query = query.filter(models.Lead.id > after_id)
+    
+    # Get one extra item to determine if there are more items
+    items = query.order_by(models.Lead.id).limit(page_size + 1).all()
+    
+    # Check if there are more items
+    has_more = len(items) > page_size
+    if has_more:
+        items = items[:-1]  # Remove the extra item
+
+    # Get the last ID for the next cursor
+    last_id = items[-1].id if items else None
+
+    return {
+        "items": items,
+        "total": total,
+        "has_more": has_more,
+        "last_id": last_id
+    }
 
 @app.patch("/leads/{lead_id}", response_model=schemas.Lead)
 async def update_lead(

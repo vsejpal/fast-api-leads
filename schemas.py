@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from models import LeadState
 
 class LeadBase(BaseModel):
@@ -47,6 +47,15 @@ class User(UserBase):
     id: int
     is_active: str
     created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class PaginatedLeads(BaseModel):
+    items: List[Lead]
+    total: int
+    has_more: bool
+    last_id: Optional[int] = None
 
     class Config:
         from_attributes = True 

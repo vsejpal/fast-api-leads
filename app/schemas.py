@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional, List
-from models import LeadState
+from app.db.models import LeadState
 
 class LeadBase(BaseModel):
     first_name: str
@@ -30,6 +30,15 @@ class LeadUpdate(BaseModel):
     class Config:
         from_attributes = True
 
+class PaginatedLeads(BaseModel):
+    items: List[Lead]
+    total: int
+    has_more: bool
+    last_id: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -47,15 +56,6 @@ class User(UserBase):
     id: int
     is_active: str
     created_at: datetime
-
-    class Config:
-        from_attributes = True
-
-class PaginatedLeads(BaseModel):
-    items: List[Lead]
-    total: int
-    has_more: bool
-    last_id: Optional[int] = None
 
     class Config:
         from_attributes = True 

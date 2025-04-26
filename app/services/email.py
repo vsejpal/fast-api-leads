@@ -1,11 +1,6 @@
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
-from typing import List
+from typing import List, Dict
 from pydantic import EmailStr, BaseModel
-import os
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
 
 # Email configuration for MailHog
 conf = ConnectionConfig(
@@ -23,7 +18,7 @@ conf = ConnectionConfig(
 class EmailSchema(BaseModel):
     email: List[EmailStr]
 
-async def send_lead_notification(lead_data: dict, attorney_email: str):
+async def send_lead_notification(lead_data: Dict[str, str], attorney_email: str):
     # Send email to prospect
     prospect_message = MessageSchema(
         subject="Thank you for your interest",

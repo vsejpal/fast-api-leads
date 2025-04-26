@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum as SQLEnum, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Enum as SQLEnum, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 import enum
@@ -16,7 +16,7 @@ class Lead(Base):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email = Column(String, nullable=False, index=True)
-    resume_path = Column(String, nullable=False)  # Path to stored resume file
+    resume_path = Column(String, nullable=False)
     state = Column(SQLEnum(LeadState), default=LeadState.PENDING)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

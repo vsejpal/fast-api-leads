@@ -1,5 +1,7 @@
-# Environment variables
-.env
+# Virtual Environment
+venv/
+env/
+ENV/
 
 # Python
 __pycache__/
@@ -8,12 +10,42 @@ __pycache__/
 *$py.class
 *.so
 .Python
-venv/
-ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Database
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Project specific
+uploads/
+test_uploads/
+.env
 *.db
 *.sqlite3
 
-# Uploaded files
-uploads/ 
+# Coverage
+.coverage
+htmlcov/
+coverage.xml
+.pytest_cache/
+
+# Logs
+*.log
+logs/ 

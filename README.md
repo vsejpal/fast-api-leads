@@ -3,6 +3,7 @@
 A modern FastAPI application for managing legal leads, handling resume submissions, and automating email notifications.
 
 ## 📋 Table of Contents
+
 - [System Design](#-system-design)
 - [Implementation Details](#-implementation-details)
 - [Getting Started](#-getting-started)
@@ -14,12 +15,14 @@ A modern FastAPI application for managing legal leads, handling resume submissio
 ## 🎯 System Design
 
 ### Components
+
 - **FastAPI Backend**: RESTful API service
 - **SQLite Database**: Local data storage
 - **Email Service**: Notification system using SMTP
 - **File Storage**: Local resume storage system
 
 ### Data Models
+
 ```python
 # Lead Model
 class Lead:
@@ -42,6 +45,7 @@ class User:
 ```
 
 ### API Endpoints
+
 ```plaintext
 POST   /api/auth/token       # Login for access token
 POST   /api/auth/register    # Register new attorney
@@ -54,11 +58,13 @@ GET    /api/leads/{id}/resume  # Download resume
 ## 🔧 Implementation Details
 
 ### Database Schema
+
 - SQLAlchemy ORM with SQLite backend
 - Automatic table creation and migrations
 - Cursor-based pagination for efficient querying
 
 ### File Handling
+
 ```python
 ALLOWED_RESUME_TYPES = {
     'application/pdf': '.pdf',
@@ -67,17 +73,20 @@ ALLOWED_RESUME_TYPES = {
     'text/plain': '.txt'
 }
 ```
+
 - Secure file storage in `uploads/` directory
 - Content-type validation
 - Unique filename generation using email
 
 ### Email Notifications
+
 - Automated emails on lead creation:
   - Confirmation to prospect
   - Notification to attorney with resume attachment
 - Configurable SMTP settings (supports Gmail, MailHog for development)
 
 ### State Management
+
 - Leads start in `PENDING` state
 - Can be updated to `REACHED_OUT` by attorneys
 - Audit trail with `created_at` and `updated_at` timestamps
@@ -85,6 +94,7 @@ ALLOWED_RESUME_TYPES = {
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 ```bash
 python 3.8+
 pip
@@ -92,6 +102,7 @@ virtualenv
 ```
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -110,6 +121,7 @@ cp .env.example .env
 ```
 
 ### Running the Application
+
 ```bash
 # Development
 python -m app.main
@@ -121,6 +133,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8001
 ## 📖 How to Use
 
 ### Install Dependencies
+
 ```bash
 # Install project dependencies
 pip install -r requirements.txt
@@ -137,6 +150,7 @@ pip install -r requirements.txt
 ```
 
 ### Using MailHog for Development
+
 ```bash
 # Install MailHog (macOS)
 brew install mailhog
@@ -156,6 +170,7 @@ SMTP_TLS=False
 ```
 
 ### Create an Attorney User
+
 ```bash
 # Register a new attorney user
 curl -X POST "http://localhost:8001/api/auth/register" \
@@ -175,6 +190,7 @@ curl -X POST "http://localhost:8001/api/auth/register" \
 ```
 
 ### Get an Access Token
+
 ```bash
 # Login to get JWT token
 curl -X POST "http://localhost:8001/api/auth/token" \
@@ -192,6 +208,7 @@ export TOKEN="eyJ0eXAiOiJKV1QiLCJhbGc..."
 ```
 
 ### Submit a Lead (Public Endpoint)
+
 ```bash
 # Create a new lead with resume
 curl -X POST "http://localhost:8001/api/leads" \
@@ -214,6 +231,7 @@ curl -X POST "http://localhost:8001/api/leads" \
 ```
 
 ### List Leads (Protected Endpoint)
+
 ```bash
 # Get paginated list of leads
 curl -X GET "http://localhost:8001/api/leads?page_size=10" \
@@ -243,6 +261,7 @@ curl -X GET "http://localhost:8001/api/leads?page_size=10&after_id=1" \
 ```
 
 ### Update Lead (Protected Endpoint)
+
 ```bash
 # Update lead state
 curl -X PATCH "http://localhost:8001/api/leads/1" \
@@ -265,6 +284,7 @@ curl -X PATCH "http://localhost:8001/api/leads/1" \
 ```
 
 ### Download Resume
+
 ```bash
 # Download lead's resume
 curl -X GET "http://localhost:8001/api/leads/1/resume" \
@@ -277,10 +297,12 @@ curl -X GET "http://localhost:8001/api/leads/1/resume" \
 ## 📚 API Documentation
 
 After starting the server, visit:
+
 - Swagger UI: `http://localhost:8001/docs`
 - ReDoc: `http://localhost:8001/redoc`
 
 ### Example API Usage
+
 ```bash
 # Login
 curl -X POST "http://localhost:8001/api/auth/token" \
@@ -299,16 +321,19 @@ curl -X POST "http://localhost:8001/api/leads" \
 ## 🔒 Security
 
 ### Authentication
+
 - JWT-based token authentication
 - Password hashing using bcrypt
 - Token expiration and refresh mechanism
 
 ### File Security
+
 - File type validation
 - Secure file paths
 - No direct file access without authentication
 
 ### Data Protection
+
 - Input validation using Pydantic
 - SQL injection protection via SQLAlchemy
 - Rate limiting on authentication endpoints
@@ -316,6 +341,7 @@ curl -X POST "http://localhost:8001/api/leads" \
 ## 💻 Development
 
 ### Project Structure
+
 ```
 app/
 ├── api/
@@ -338,6 +364,7 @@ app/
 ```
 
 ### Testing
+
 ```bash
 # Run tests
 pytest
@@ -349,7 +376,7 @@ pytest --cov=app tests/
 ## 🚧 Future Improvements
 
 ### Planned Features
-- [ ] Multi-tenant support
+
 - [ ] Advanced search and filtering
 - [ ] Document preview
 - [ ] Analytics dashboard
@@ -357,12 +384,14 @@ pytest --cov=app tests/
 - [ ] Email templates customization
 
 ### Performance Enhancements
+
 - [ ] Caching layer
 - [ ] Background task processing
 - [ ] File storage optimization
 - [ ] Database indexing optimization
 
 ### Infrastructure
+
 - [ ] Docker containerization
 - [ ] CI/CD pipeline
 - [ ] Cloud storage integration
@@ -375,4 +404,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. 
+Contributions are welcome! Please feel free to submit a Pull Request.

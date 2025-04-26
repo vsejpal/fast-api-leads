@@ -106,7 +106,7 @@ async def update_lead(
     current_user: models.User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    db_lead = leads_crud.update_lead(db, lead_id, lead_update.dict(exclude_unset=True))
+    db_lead = leads_crud.update_lead(db, lead_id, lead_update.model_dump(exclude_unset=True))
     if db_lead is None:
         raise HTTPException(status_code=404, detail="Lead not found")
     return db_lead 

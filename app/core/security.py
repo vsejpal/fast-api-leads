@@ -14,7 +14,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
@@ -57,6 +57,6 @@ async def get_current_user(
 async def get_current_active_user(
     current_user: models.User = Depends(get_current_user)
 ) -> models.User:
-    if current_user.is_active != "active":
+    if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user 

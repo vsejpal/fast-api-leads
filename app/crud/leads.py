@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import Optional, List, Dict, Any
 from app.db import models
+from app.schemas import PaginatedLeads
 
 def create_lead(db: Session, lead_data: Dict[str, Any]) -> models.Lead:
     db_lead = models.Lead(**lead_data)
@@ -13,7 +14,7 @@ def get_leads(
     db: Session,
     page_size: int = 10,
     after_id: Optional[int] = None
-) -> Dict[str, Any]:
+) -> PaginatedLeads:
     query = db.query(models.Lead)
     total = query.count()
 
@@ -28,12 +29,12 @@ def get_leads(
 
     last_id = items[-1].id if items else None
 
-    return {
-        "items": items,
-        "total": total,
-        "has_more": has_more,
-        "last_id": last_id
-    }
+    return PaginatedLeads(
+        items=items,
+        total=total,
+        has_more=has_more,
+        last_id=last_id
+    )
 
 def get_lead(db: Session, lead_id: int) -> Optional[models.Lead]:
     return db.query(models.Lead).filter(models.Lead.id == lead_id).first()

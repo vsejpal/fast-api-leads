@@ -20,6 +20,7 @@ class Lead(LeadBase):
 
     class Config:
         from_attributes = True
+        arbitrary_types_allowed = True
 
 class LeadUpdate(BaseModel):
     first_name: Optional[str] = None
@@ -29,6 +30,7 @@ class LeadUpdate(BaseModel):
 
     class Config:
         from_attributes = True
+        arbitrary_types_allowed = True
 
 class PaginatedLeads(BaseModel):
     items: List[Lead]
@@ -38,6 +40,7 @@ class PaginatedLeads(BaseModel):
 
     class Config:
         from_attributes = True
+        arbitrary_types_allowed = True
 
 class Token(BaseModel):
     access_token: str
@@ -54,8 +57,9 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    is_active: str
+    is_active: bool
     created_at: datetime
 
     class Config:
-        from_attributes = True 
+        from_attributes = True
+        arbitrary_types_allowed = True 

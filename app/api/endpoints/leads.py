@@ -57,7 +57,10 @@ async def create_lead(
     db_lead = leads_crud.create_lead(db, lead_data)
 
     # Send notifications
-    await send_lead_notification(lead_data, "attorney@company.com")
+    try:
+        await send_lead_notification(lead_data, "attorney@company.com")
+    except Exception as e:
+        print(f"[WARN] Email notification failed: {e}")
 
     return db_lead
 

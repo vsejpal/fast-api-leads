@@ -382,6 +382,7 @@ pytest --cov=app tests/
 - [ ] Analytics dashboard
 - [ ] Bulk lead import/export
 - [ ] Email templates customization
+- [ ] AWS S3 integration for secure document storage and scalability
 
 ### Performance Enhancements
 
@@ -395,6 +396,9 @@ pytest --cov=app tests/
 - [ ] Docker containerization
 - [ ] CI/CD pipeline
 - [ ] Cloud storage integration
+  - [ ] AWS S3 for resume storage
+  - [ ] CDN integration for faster file delivery
+  - [ ] Automated backup and retention policies
 - [ ] Monitoring and logging
 - [ ] Load balancing
 

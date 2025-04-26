@@ -10,6 +10,8 @@ import auth
 from database import engine, get_db
 from email_utils import send_lead_notification
 from typing import List
+from fastapi.responses import FileResponse
+import mimetypes
 
 # Create all tables
 models.Base.metadata.create_all(bind=engine)
@@ -20,6 +22,14 @@ app = FastAPI()
 UPLOAD_DIR = "uploads"
 if not os.path.exists(UPLOAD_DIR):
     os.makedirs(UPLOAD_DIR)
+
+# Define allowed file types
+ALLOWED_RESUME_TYPES = {
+    'application/pdf': '.pdf',
+    'application/msword': '.doc',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+    'text/plain': '.txt'
+}
 
 # Authentication endpoints
 @app.post("/token", response_model=schemas.Token)
@@ -49,8 +59,18 @@ async def create_lead(
     resume: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    # Save the resume file
+    # Validate file type
+    content_type = resume.content_type
+    if content_type not in ALLOWED_RESUME_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid file type. Allowed types are: {', '.join(ALLOWED_RESUME_TYPES.values())}"
+        )
+
+    # Save the resume file with proper extension
+    extension = ALLOWED_RESUME_TYPES[content_type]
     file_location = os.path.join(UPLOAD_DIR, f"{email}_{resume.filename}")
+    
     with open(file_location, "wb+") as file_object:
         file_object.write(await resume.read())
 
@@ -106,6 +126,36 @@ async def update_lead(
     db.commit()
     db.refresh(db_lead)
     return db_lead
+
+@app.get("/leads/{lead_id}/resume", response_class=FileResponse)
+async def get_resume(
+    lead_id: int,
+    current_user: models.User = Depends(auth.get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    # Get the lead
+    lead = db.query(models.Lead).filter(models.Lead.id == lead_id).first()
+    if lead is None:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    
+    # Check if resume file exists
+    if not os.path.exists(lead.resume_path):
+        raise HTTPException(status_code=404, detail="Resume file not found")
+    
+    # Get the original filename from the stored path
+    filename = os.path.basename(lead.resume_path)
+    
+    # Detect content type
+    content_type, _ = mimetypes.guess_type(filename)
+    if content_type is None:
+        content_type = 'application/octet-stream'
+    
+    # Return the file
+    return FileResponse(
+        path=lead.resume_path,
+        filename=filename,
+        media_type=content_type
+    )
 
 # User management endpoints
 @app.post("/users/", response_model=schemas.User)

@@ -1,3 +1,4 @@
+import os
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 from typing import List, Dict
 from pydantic import EmailStr, BaseModel
@@ -19,6 +20,10 @@ class EmailSchema(BaseModel):
     email: List[EmailStr]
 
 async def send_lead_notification(lead_data: Dict[str, str], attorney_email: str):
+    EMAIL_SENDING_ENABLED = os.environ.get("ENABLE_EMAIL", "1") not in ("0", "false", "False")
+    if not EMAIL_SENDING_ENABLED:
+        print("[INFO] Email sending is disabled by environment variable.")
+        return
     # Send email to prospect
     prospect_message = MessageSchema(
         subject="Thank you for your interest",

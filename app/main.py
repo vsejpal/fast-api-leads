@@ -2,6 +2,10 @@ from fastapi import FastAPI
 from app.api.api import api_router
 from app.db.models import Base
 from app.db.session import engine
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Create all tables
 Base.metadata.create_all(bind=engine)
